@@ -11,3 +11,13 @@ if spatial_ref_points == spatial_ref_raster:
     print('Feature class and raster have the same coordinate systems')
 else:
     print('Feature class and raster have different coordinate systems')
+result = r"E:\university\3 course\programming in gis\lections\arcpy, raster pr8, l13\data\rec_sites.lyr"
+arcpy.MakeFeatureLayer_management(points, result)
+arcpy.management.AddField(points, "HEIGHT", "FLOAT")
+with arcpy.da.UpdateCursor(result, ["SHAPE@XY", "HEIGHT"]) as cursor:
+    for row in cursor:
+        x, y = row[0]
+        raster_value = arcpy.GetCellValue_management(raster, str(x)+" "+str(y))
+        row[1] = float(raster_value.getOutput(0))
+        cursor.updateRow(row)
+
